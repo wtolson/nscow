@@ -7,7 +7,7 @@ http://code.google.com/p/nscow/
 
 Navier-Stokes's Cow is a simple fluid dynamics simulator. It assumes constant density and no-slip boundary conditions. And oh, by the way, the cow is spherical, frictionless and purple.
 
-To compile you will need the Qt 4.6 SDK (http://qt.nokia.com/downloads or see your package manager).  Simply run 'qmake' then 'make in the root directory.
+To compile you will need the Qt 4.6 SDK (http://qt.nokia.com/downloads or see your package manager).  Simply run 'qmake' then 'make in the projects root directory.
 
 Acknowledgments and thanks to:
 Samantha Evans for 'Arrow out.png' and 'Arrow in.png'.

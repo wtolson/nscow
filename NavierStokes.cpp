@@ -5,9 +5,9 @@
  *      Author: William Olson
  */
 
-#include <iostream>
-using namespace std;
 #include <cmath>
+using namespace std;
+
 #include "ScalarField2D.h"
 #include "VectorField2D.h"
 #include "NavierStokes.h"

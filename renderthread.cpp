@@ -120,7 +120,7 @@ void RenderThread::writeImage(const ScalarField2D& data, QImage& image) {
     int xdim = data.xdim;
     int ydim = data.ydim;
 
-    double scale = 255 / max(abs(data.min()), abs(data.max()));
+    double scale = 255 / max(fabs(data.min()), fabs(data.max()));
     QRgb* ppixel = (QRgb*) image.bits();
     for(int x = 0; x < xdim; x++) {
         for(int y = 0; y < ydim; y++) {
@@ -138,7 +138,7 @@ void RenderThread::writeImage(const VectorField2D& data, QImage& image) {
     int xdim = data.xdim;
     int ydim = data.ydim;
 
-    double scale = 255/max(abs(data.max()),abs(data.min()));;
+    double scale = 255/max(fabs(data.max()),fabs(data.min()));;
 
     QRgb* ppixel = (QRgb*) image.bits();
     for(int x = 0; x < xdim; x++) {
@@ -146,7 +146,7 @@ void RenderThread::writeImage(const VectorField2D& data, QImage& image) {
             double g = 0.0;
             if (data.value(x,y,0) < 0.0) g -= data.value(x,y,0);
             if (data.value(x,y,1) < 0.0) g -= data.value(x,y,1);
-            *ppixel = qRgb(scale * abs( data.value(x,y,0) ) , 0.5*scale*g , scale*abs(data.value(x,y,1)) );
+            *ppixel = qRgb(scale * fabs( data.value(x,y,0) ) , 0.5*scale*g , scale*fabs(data.value(x,y,1)) );
             ppixel++;
         }
     }

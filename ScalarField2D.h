@@ -22,9 +22,14 @@ public:
         double checkBoundry(int x, int y) const;
 
         void print() const;
-        operator double*() const;
+
+        double *begin() const;
+        double *end() const;
+        int size() const;
+
         double min() const;
         double max() const;
+        double mean() const;
         void fill(double val);
 
 	const int xdim;
@@ -36,8 +41,16 @@ private:
         double itsBoundryScale;
 };
 
-inline ScalarField2D::operator double*() const {
+inline double *ScalarField2D::begin() const {
     return itsData;
+}
+
+inline double *ScalarField2D::end() const {
+    return itsData+size();
+}
+
+inline int ScalarField2D::size() const {
+    return xdim*ydim;
 }
 
 inline double& ScalarField2D::value(int x, int y) {

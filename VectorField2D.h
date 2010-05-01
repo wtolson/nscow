@@ -22,6 +22,10 @@ public:
 
         void print() const;
 
+        double *begin() const;
+        double *end() const;
+        int size() const;
+
         double min() const;
         double max() const;
         double mean() const;
@@ -36,6 +40,18 @@ private:
 	bool ownsData;
         double itsBoundryScale;
 };
+
+inline double *VectorField2D::begin() const {
+    return itsData;
+}
+
+inline double *VectorField2D::end() const {
+    return itsData+size();
+}
+
+inline int VectorField2D::size() const {
+    return 2*xdim*ydim;
+}
 
 inline double& VectorField2D::value(int x, int y, int k) {
         return itsData[(k * xdim * ydim) + (y * xdim) + x];

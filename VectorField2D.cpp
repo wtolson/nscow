@@ -5,38 +5,40 @@
  *      Author: wto
  */
 
-#include "VectorField2D.h"
+#include <algorithm>
 #include <iostream>
 #include <cmath>
 using namespace std;
+
+#include "VectorField2D.h"
 
 VectorField2D::VectorField2D(int xdim, int ydim, double boundryScale, double* data) :
         xdim(xdim), ydim(ydim), itsData(data), ownsData(false), itsBoundryScale(boundryScale) {
     if (itsData == 0) {
         ownsData = true;
-        itsData = new double[2 * xdim * ydim];
+        itsData = new double[size()];
     }
 }
 
 VectorField2D::~VectorField2D() {
     if (ownsData) {
-        delete itsData;
+        delete[] itsData;
     }
 }
 
 VectorField2D::VectorField2D(const VectorField2D& other) :
-        xdim(other.xdim), ydim(other.ydim), ownsData(true), itsBoundryScale(other.itsBoundryScale)  {
-    itsData = new double[2 * xdim * ydim];
-    for(int i = 0; i < 2*xdim*ydim; i++) {
-        itsData[i] = other.itsData[i];
-    }
+        xdim(other.xdim), ydim(other.ydim), itsData(new double[size()]), ownsData(true), itsBoundryScale(other.itsBoundryScale)  {
+    copy(other.begin(),other.end(),itsData);
 }
 
 VectorField2D& VectorField2D::operator=(const VectorField2D& other) {
-    itsBoundryScale = other.itsBoundryScale;
-    for(int i = 0; i < 2*xdim*ydim; i++) {
-        itsData[i] = other.itsData[i];
+    if(other.xdim != xdim && other.ydim != ydim) {
+        cerr << "Warning: Mismatched vector field dimensions." << endl;
+        return *this;
     }
+
+    itsBoundryScale = other.itsBoundryScale;
+    copy(other.begin(),other.end(),itsData);
     return *this;
 }
 
@@ -63,16 +65,15 @@ double VectorField2D::checkBoundry(int x, int y, int k) const {
     if (x < 0) {
         scale = itsBoundryScale;
         x = 0;
-    }
-    if (x > xdim-1) {
+    } else if (x > xdim-1) {
         scale = itsBoundryScale;
         x = xdim-1;
     }
+
     if (y < 0) {
         scale = itsBoundryScale;
         y = 0;
-    }
-    if (y > ydim-1) {
+    } else if (y > ydim-1) {
         scale = itsBoundryScale;
         y = ydim-1;
     }
@@ -80,32 +81,23 @@ double VectorField2D::checkBoundry(int x, int y, int k) const {
 }
 
 double VectorField2D::min() const {
-    double ans = itsData[0];
-    for(int i = 1; i < (2*xdim*ydim); i++)
-        ans = std::min(ans, itsData[i]);
-
-    return ans;
+    return *min_element(begin(),end());
 }
 
 double VectorField2D::max() const {
-    double ans = itsData[0];
-    for(int i = 1; i < (2*xdim*ydim); i++)
-        ans = std::max(ans, itsData[i]);
-
-    return ans;
+    return *max_element(begin(),end());
 }
 
 double VectorField2D::mean() const {
-    double ans = 0;
+    double ans = 0.0;
     for (int x = 0; x < xdim; x++) {
         for (int y = 0; y < ydim; y++) {
             ans += sqrt(value(x,y,0)*value(x,y,0) + value(x,y,1)*value(x,y,1));
         }
     }
-    return ans / (xdim*ydim);
+    return ans / size();
 }
 
 void VectorField2D::fill(double val) {
-    for(double* ittr = itsData; ittr < itsData+2*xdim*ydim; ittr++)
-        *ittr = val;
+    fill_n(itsData,size(),val);
 }

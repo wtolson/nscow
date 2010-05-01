@@ -20,3 +20,4 @@ HEADERS += mainwindow.h \
     drawbox.h
 FORMS += mainwindow.ui
 RESOURCES += resources.qrc
+VERSION += 1.0

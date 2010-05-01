@@ -5,56 +5,59 @@
  *      Author: wto
  */
 
+#include <algorithm>
 #include <iostream>
 #include <cmath>
-#include "ScalarField2D.h"
-
 using namespace std;
+
+#include "ScalarField2D.h"
 
 ScalarField2D::ScalarField2D(int xdim, int ydim, double boundryScale, double* data) :
         xdim(xdim), ydim(ydim), itsData(data), ownsData(false), itsBoundryScale(boundryScale) {
     if (itsData == 0) {
         ownsData = true;
-        itsData = new double[xdim * ydim];
+        itsData = new double[size()];
     }
 }
 
 ScalarField2D::~ScalarField2D() {
     if (ownsData) {
-        delete itsData;
+        delete[] itsData;
     }
 }
 
 ScalarField2D::ScalarField2D(const ScalarField2D& other) :
-        xdim(other.xdim), ydim(other.ydim), ownsData(true), itsBoundryScale(other.itsBoundryScale)  {
-    itsData = new double[xdim * ydim];
-    for(int i = 0; i < xdim*ydim; i++) {
-        itsData[i] = other.itsData[i];
-    }
+        xdim(other.xdim), ydim(other.ydim), itsData(new double[size()]), ownsData(true), itsBoundryScale(other.itsBoundryScale)  {
+    copy(other.begin(),other.end(),itsData);
 }
 
 ScalarField2D& ScalarField2D::operator=(const ScalarField2D& other) {
-    itsBoundryScale = other.itsBoundryScale;
-    for(int i = 0; i < xdim*ydim; i++) {
-        itsData[i] = other.itsData[i];
+    if(other.xdim != xdim && other.ydim != ydim) {
+        cerr << "Warning: Mismatched vector field dimensions." << endl;
+        return *this;
     }
+
+    itsBoundryScale = other.itsBoundryScale;
+    copy(other.begin(),other.end(),itsData);
     return *this;
 }
 
 double ScalarField2D::min() const {
-    double ans = itsData[0];
-    for(int i = 1; i < (xdim*ydim); i++)
-        ans = std::min(ans, itsData[i]);
-
-    return ans;
+    return *min_element(begin(),end());
 }
 
 double ScalarField2D::max() const {
-    double ans = itsData[0];
-    for(int i = 1; i < (xdim*ydim); i++)
-        ans = std::max(ans, itsData[i]);
+    return *max_element(begin(),end());
+}
 
-    return ans;
+double ScalarField2D::mean() const {
+    double ans = 0.0;
+    for (int x = 0; x < xdim; x++) {
+        for (int y = 0; y < ydim; y++) {
+            ans += value(x,y);
+        }
+    }
+    return ans / size();
 }
 
 void ScalarField2D::print() const {
@@ -78,23 +81,22 @@ double ScalarField2D::checkBoundry(int x, int y) const {
     if (x < 0) {
         scale = itsBoundryScale;
         x = 0;
-    }
-    if (x > xdim-1) {
+    } else if (x > xdim-1) {
         scale = itsBoundryScale;
         x = xdim-1;
     }
+
     if (y < 0) {
         scale = itsBoundryScale;
         y = 0;
-    }
-    if (y > ydim-1) {
+    } else if (y > ydim-1) {
         scale = itsBoundryScale;
         y = ydim-1;
     }
+
     return scale*value(x,y);
 }
 
 void ScalarField2D::fill(double val) {
-    for(double* ittr = itsData; ittr < itsData+xdim*ydim; ittr++)
-        *ittr = val;
+    fill_n(itsData,size(),val);
 }

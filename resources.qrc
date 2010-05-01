@@ -1,0 +1,10 @@
+<RCC>
+    <qresource prefix="/img">
+        <file alias="Arrow_in.png">img/Arrow_in.png</file>
+        <file alias="Arrow_out.png">img/Arrow_out.png</file>
+        <file alias="Beakerblue.png">img/Beakerblue.png</file>
+        <file alias="Gnome-application-exit.png">img/Gnome-application-exit.png</file>
+        <file alias="Logo_physics.png">img/Logo_physics.png</file>
+        <file alias="purplecow.png">img/purplecow.png</file>
+    </qresource>
+</RCC>

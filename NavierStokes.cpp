@@ -6,6 +6,7 @@
  */
 
 #include <cmath>
+#include <iostream>
 using namespace std;
 
 #include "ScalarField2D.h"
@@ -104,15 +105,15 @@ void NavierStokes::diffuse(const VectorField2D& u, ScalarField2D& X) {
 }
 
 void NavierStokes::addForces(VectorField2D &u, double x1, double y1, double x2, double y2) {
-    double rr = 1.0/(rTool*rTool);
-    double a = 0.3*magTool*(y1-y2)*rr;
-    double b = 0.3*magTool*(x2-x1)*rr;
+    double rr = 0.3*magTool/(rTool*rTool);
+    double a = (y1-y2);
+    double b = (x2-x1);
     double c = -a*x1 - b*y1;
     for (int x = 0; x < u.xdim; x++) {
         for (int y = 0; y < u.ydim; y++) {
             double l = a*a+b*b;
             double d = (a*x + b*y + c);
-            d = d*d*d*d/(a*a + b*b);
+            d = d*d/(a*a + b*b);
             double r = (x-x1)*(x-x1) + (y-y1)*(y-y1);
             if (d+r>l) {
                 d = (x-x2)*(x-x2) + (y-y2)*(y-y2);
@@ -120,8 +121,8 @@ void NavierStokes::addForces(VectorField2D &u, double x1, double y1, double x2, 
                 d = r;
             }
             l = exp(-d*rr);
-            u.value(x,y,0) += b*l;
-            u.value(x,y,1) -= a*l;
+            u.value(x,y,0) += b*l*rr;
+            u.value(x,y,1) -= a*l*rr;
         }
     }
 }

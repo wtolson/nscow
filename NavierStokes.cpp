@@ -6,7 +6,6 @@
  */
 
 #include <cmath>
-#include <iostream>
 using namespace std;
 
 #include "ScalarField2D.h"

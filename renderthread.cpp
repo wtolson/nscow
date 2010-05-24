@@ -63,7 +63,7 @@ void RenderThread::run()
 
         switch (m_hasAction) {
         case FORCE:
-            NavierStokes::addForces(v, ydim*m_fstart.y(), xdim*m_fstart.x(), ydim*m_fend.y(), xdim*m_fend.x());
+            NavierStokes::addForces(v, xdim*m_fstart.x(), ydim*m_fstart.y(), xdim*m_fend.x(), ydim*m_fend.y());
             m_fstart = m_fend;
             m_hasAction = NONE;
             break;
@@ -122,8 +122,8 @@ void RenderThread::writeImage(const ScalarField2D& data, QImage& image) {
 
     double scale = 255 / max(fabs(data.min()), fabs(data.max()));
     QRgb* ppixel = (QRgb*) image.bits();
-    for(int x = 0; x < xdim; x++) {
-        for(int y = 0; y < ydim; y++) {
+    for(int y = 0; y < ydim; y++) {
+        for(int x = 0; x < xdim; x++) {
             if (data.value(x,y) < 0)
                 *ppixel = qRgb(-scale*data.value(x,y),0,0);
             else
@@ -141,8 +141,8 @@ void RenderThread::writeImage(const VectorField2D& data, QImage& image) {
     double scale = 255/max(fabs(data.max()),fabs(data.min()));;
 
     QRgb* ppixel = (QRgb*) image.bits();
-    for(int x = 0; x < xdim; x++) {
-        for(int y = 0; y < ydim; y++) {
+    for(int y = 0; y < ydim; y++) {
+        for(int x = 0; x < xdim; x++) {
             double g = 0.0;
             if (data.value(x,y,0) < 0.0) g -= data.value(x,y,0);
             if (data.value(x,y,1) < 0.0) g -= data.value(x,y,1);
@@ -169,8 +169,8 @@ void RenderThread::moreForce(double x, double y) {
 
 void RenderThread::addDye(double x, double y) {
     mutex.lock();
-    m_yTool = x*xdim;
-    m_xTool = y*ydim;
+    m_xTool = x*xdim;
+    m_yTool = y*ydim;
     m_hasAction = DYE;
     mutex.unlock();
 }
@@ -183,16 +183,16 @@ void RenderThread::stopAction(double, double) {
 
 void RenderThread::addInForce(double x, double y) {
     mutex.lock();
-    m_yTool = x*xdim;
-    m_xTool = y*ydim;
+    m_xTool = x*xdim;
+    m_yTool = y*ydim;
     m_hasAction = INFORCE;
     mutex.unlock();
 }
 
 void RenderThread::addOutForce(double x, double y) {
     mutex.lock();
-    m_yTool = x*xdim;
-    m_xTool = y*ydim;
+    m_xTool = x*xdim;
+    m_yTool = y*ydim;
     m_hasAction = OUTFORCE;
     mutex.unlock();
 }

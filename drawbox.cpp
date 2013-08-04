@@ -9,15 +9,15 @@ DrawBox::DrawBox(QWidget *parent) :
 
 void DrawBox::mousePressEvent(QMouseEvent *ev) {
     if (ev->buttons() & Qt::LeftButton)
-        clickAt(ev->posF().x()/this->width(),ev->posF().y()/this->height());
+        clickAt((float) ev->pos().x()/this->width(), (float) ev->pos().y()/this->height());
 }
 
 void DrawBox::mouseMoveEvent(QMouseEvent *ev) {
     if (ev->buttons() & Qt::LeftButton) {
-        dragTo(ev->posF().x()/this->width(),ev->posF().y()/this->height());
+        dragTo((float) ev->pos().x()/this->width(), (float) ev->pos().y()/this->height());
     }
 }
 
 void DrawBox::mouseReleaseEvent(QMouseEvent *ev) {
-    releaseAt(ev->posF().x()/this->width(),ev->posF().y()/this->height());
+    releaseAt((float) ev->pos().x()/this->width(), (float) ev->pos().y()/this->height());
 }

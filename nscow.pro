@@ -3,6 +3,7 @@
 # -------------------------------------------------
 TARGET = nscow
 TEMPLATE = app
+QT += gui declarative
 SOURCES += main.cpp \
     mainwindow.cpp \
     VectorOperators.cpp \
